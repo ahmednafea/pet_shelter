@@ -10,7 +10,7 @@ import 'package:pet_shelter/identity/middleware/identity_middleware.dart';
 import 'package:pet_shelter/identity/models/identity_state.dart';
 import 'package:redux/redux.dart';
 
-import 'configs/router.dart' as AppRouter;
+import 'configs/router.dart' as app_router;
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Bayt Aleef',
         theme: AppColors.getThemeData(),
-        routerConfig: AppRouter.router,
+        routerConfig: app_router.router,
       ),
     );
   }

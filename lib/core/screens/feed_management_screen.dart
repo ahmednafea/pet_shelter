@@ -6,12 +6,12 @@ import 'package:pet_shelter/core/models/post_model.dart';
 import 'package:pet_shelter/core/screens/add_post_screen.dart';
 import 'package:pet_shelter/identity/models/users_record.dart';
 
-class FeedView extends StatelessWidget {
-  const FeedView({super.key});
+class FeedManagementScreen extends StatelessWidget {
+  const FeedManagementScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(appBar: AppBar(centerTitle: true,title: Text("Feed Management"),),
       body: StreamBuilder(
         stream: PostRecord.collection.snapshots(),
         builder: (context, snap) {
@@ -31,10 +31,10 @@ class FeedView extends StatelessWidget {
               ? ListView.builder(
                 itemCount: data.length,
                 padding: EdgeInsets.only(
-                  bottom: 12,
+                  bottom: 20,
                   right: 16,
                   left: 16,
-                  top: MediaQuery.of(context).padding.top,
+                  top: 20,
                 ),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -88,6 +88,30 @@ class FeedView extends StatelessWidget {
                                       post.description ?? "",
                                       style: const TextStyle(color: AppColors.textSecondary),
                                     ),
+                                    const SizedBox(height: 16),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        post.reference.delete();
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        backgroundColor: AppColors.error,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 5,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "Delete",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -101,15 +125,7 @@ class FeedView extends StatelessWidget {
               )
               : Center(child: Text("No Available Posts."));
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        onPressed: () {
-          navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) => AddPostScreen()));
-        },
-        tooltip: 'Add Post',
-        child: const Icon(Icons.add),
-      ),
+      )
     );
   }
 }

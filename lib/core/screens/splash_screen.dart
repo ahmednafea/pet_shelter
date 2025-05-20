@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:pet_shelter/configs/app_assets.dart';
 import 'package:pet_shelter/configs/app_colors.dart';
+import 'package:pet_shelter/core/middleware/navigation_key.dart';
 import 'package:pet_shelter/core/models/app_state.dart';
 import 'package:pet_shelter/identity/actions/login_action.dart';
+import 'package:pet_shelter/identity/screens/login_view.dart';
 import 'package:pet_shelter/shared.dart';
 import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,14 +26,14 @@ class SplashScreen extends StatelessWidget {
           var email = preferences.getString("baytAleefEmail") ?? "";
           var password = preferences.getString("baytAleefPassword") ?? "";
           store.dispatch(LoginAction(email: email, password: password));
+        } else {
+          Future.delayed(const Duration(seconds: 4), () {
+            context.replaceNamed("login");
+          });
         }
         initializeDateFormatting("en");
       },
-      onInitialBuild: (Store<AppState> store) async {
-        Future.delayed(const Duration(seconds: 2), () {
-          context.pushReplacementNamed("home");
-        });
-      },
+
       builder: (BuildContext ctx, Store<AppState> store) {
         return Scaffold(
           backgroundColor: Colors.white,

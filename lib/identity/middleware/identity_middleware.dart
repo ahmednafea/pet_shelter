@@ -16,46 +16,55 @@ identityMiddleware(Store<AppState> store, action, NextDispatcher next) {
     authManager
         .signInWithEmail(navigatorKey.currentContext!, action.email, action.password)
         .then((val) async {
-      if (val != null) {
-        var user = UsersRecord.fromSnapshot(await UsersRecord.collection
-            .doc("${val.authUserInfo.uid}")
-            .get());
+          if (val != null) {
+            var user = UsersRecord.fromSnapshot(
+              await UsersRecord.collection.doc("${val.authUserInfo.uid}").get(),
+            );
 
-        store.dispatch(UpdateUserData(data: val, userData: user));
-        var pref = await SharedPreferences.getInstance();
-        pref.setString("baytAleefEmail", action.email);
-        pref.setString("baytAleefPassword", action.password);
-        navigatorKey.currentContext!.goNamed("home");
-      } else {
-        store.dispatch(SignUpAction(email: action.email, password: action.password));
-      }
-    }).whenComplete(() {
-      store.dispatch(UpdateLoadingState(isLoading: false));
-    });
+            store.dispatch(UpdateUserData(data: val, userData: user));
+            var pref = await SharedPreferences.getInstance();
+            pref.setString("baytAleefEmail", action.email);
+            pref.setString("baytAleefPassword", action.password);
+            navigatorKey.currentContext!.goNamed("home");
+          }
+        })
+        .whenComplete(() {
+          store.dispatch(UpdateLoadingState(isLoading: false));
+        });
   } else if (action is SignUpAction) {
     store.dispatch(UpdateLoadingState(isLoading: true));
     authManager
         .createAccountWithEmail(navigatorKey.currentContext!, action.email, action.password)
         .then((value) async {
-      if (value != null) {
-        var user = UsersRecord.fromSnapshot(await UsersRecord.collection
-            .doc("${value.authUserInfo.uid}")
-            .get());
-        store.dispatch(UpdateUserData(data: value, userData: user));
-        var pref = await SharedPreferences.getInstance();
-        pref.setString("baytAleefEmail", action.email);
-        pref.setString("baytAleefPassword", action.password);
-        navigatorKey.currentContext!.goNamed("home");
-      }
-    }).whenComplete(() {
-      store.dispatch(UpdateLoadingState(isLoading: false));
-    });
+          if (value != null) {
+
+            var user = UsersRecord.fromSnapshot(
+              await UsersRecord.collection.doc("${value.authUserInfo.uid}").get(),
+            );
+            await user.reference.update(
+              createUsersRecordData(
+                email: action.email,
+                birthdate: action.birthdate,
+                displayName: action.displayName,
+                isAdmin: false,
+                phoneNumber: action.phoneNumber,
+              ),
+            );
+            store.dispatch(UpdateUserData(data: value, userData: user));
+            var pref = await SharedPreferences.getInstance();
+            pref.setString("baytAleefEmail", action.email);
+            pref.setString("baytAleefPassword", action.password);
+            navigatorKey.currentContext!.goNamed("home");
+          }
+        })
+        .whenComplete(() {
+          store.dispatch(UpdateLoadingState(isLoading: false));
+        });
   } else if (action is UpdateProfileAction) {
     store.dispatch(UpdateLoadingState(isLoading: true));
-    currentUserReference!.update({
-      "birthdate": action.birthDate,
-      "display_name": action.fullName
-    }).whenComplete(() => store.dispatch(UpdateLoadingState(isLoading: false)));
+    currentUserReference!
+        .update({"birthdate": action.birthDate, "display_name": action.fullName})
+        .whenComplete(() => store.dispatch(UpdateLoadingState(isLoading: false)));
   }
   next(action);
 }

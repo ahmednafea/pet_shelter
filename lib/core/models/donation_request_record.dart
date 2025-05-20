@@ -20,20 +20,20 @@ class DonationRequestRecord extends FirestoreRecord {
 
 
   // "amount" field.
-  num? _amount;
+  String? _amount;
 
-  num get amount => _amount ??0.0;
+  String get amount => _amount ??"";
 
   bool hasAmount() => _amount != null;
 
 
   void _initializeFields() {
     _userId = snapshotData['user_id'] as String?;
-    _amount = snapshotData['amount'] as num?;
+    _amount = snapshotData['amount'] as String?;
 
   }
 
-  static CollectionReference get collection => FirebaseFirestore.instance.collection('adoption_requests');
+  static CollectionReference get collection => FirebaseFirestore.instance.collection('donations_requests');
 
   static Stream<DonationRequestRecord> getDocument(DocumentReference ref) =>
       ref.snapshots().map((s) => DonationRequestRecord.fromSnapshot(s));
@@ -65,7 +65,7 @@ class DonationRequestRecord extends FirestoreRecord {
 }
 Map<String, dynamic> createDonationRequestRecordData({
   String? userId,
-  num? amount
+  String? amount
 }) {
   final firestoreData = <String, dynamic>{
     'user_id': userId,

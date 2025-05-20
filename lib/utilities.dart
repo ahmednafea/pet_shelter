@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:pet_shelter/configs/app_colors.dart';
 
 class Utilities {
   static showToast({required String msg, Toast? length, required bool isError}) {
@@ -74,5 +75,50 @@ class Utilities {
     final seconds = twoDigits(duration.inSeconds.remainder(60));
 
     return '${hours != "00" ? "$hours h, " : ""}${minutes != "00" ? "$minutes m, " : ""}${seconds != "00" ? "$seconds s" : ""}';
+  }
+}
+InputDecoration customInputDecoration(String label) {
+  return InputDecoration(
+    labelText: label,
+    floatingLabelStyle: TextStyle(color: AppColors.textPrimary),
+    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: Colors.grey), // Unfocused border
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: AppColors.primary), // App primary color
+    ),
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+  );
+}Widget statusWidget(String status) {
+  switch (status) {
+    case "Pending":
+      return Card(
+        color: AppColors.primaryLight,
+        child: Padding(
+          padding: EdgeInsets.all(5),
+          child: Text("Pending", style: TextStyle(color: Colors.white)),
+        ),
+      );
+    case "Accepted":
+      return Card(
+        color: Colors.green[900],
+        child: Padding(
+          padding: EdgeInsets.all(5),
+          child: Text("Accepted", style: TextStyle(color: Colors.white)),
+        ),
+      );
+    case "Rejected":
+      return Card(
+        color: Colors.red[900],
+        child: Padding(
+          padding: EdgeInsets.all(5),
+          child: Text("Rejected", style: TextStyle(color: Colors.white)),
+        ),
+      );
+    default:
+      return SizedBox();
   }
 }

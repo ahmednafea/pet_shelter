@@ -37,7 +37,7 @@ class PostRecord extends FirestoreRecord {
   bool operator ==(other) =>
       other is PostRecord && reference.path.hashCode == other.reference.path.hashCode;
 }
-Map<String, dynamic> createReportRecordData({
+Map<String, dynamic> createPostRecordData({
   String? userId,
   String? image,
   String? description

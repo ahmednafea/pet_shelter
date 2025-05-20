@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:firebase_cloud_firestore/firebase_cloud_firestore.dart';
+import 'package:pet_shelter/core/models/dog_model.dart';
 import 'package:pet_shelter/firebase_auth/firestore_util.dart';
 
 class AdoptionRequestRecord extends FirestoreRecord {
-  AdoptionRequestRecord._(
-    super.reference,
-    super.data,
-  ) {
+  AdoptionRequestRecord._(super.reference, super.data) {
     _initializeFields();
   }
 
@@ -18,12 +16,12 @@ class AdoptionRequestRecord extends FirestoreRecord {
 
   bool hasUserID() => _userId != null;
 
-  // "Dog Id" field.
-  String? _dogId;
+  // "Dog" field.
+  Map<String, dynamic>? _dog;
 
-  String get dogId => _dogId ?? '';
+  Map<String, dynamic>? get dog => _dog;
 
-  bool hasDogID() => _dogId != null;
+  bool hasDogID() => _dog != null;
 
   // "address" field.
   String? _address;
@@ -32,13 +30,22 @@ class AdoptionRequestRecord extends FirestoreRecord {
 
   bool hasAddress() => _address != null;
 
+  // "status" field.
+  String? _status;
+
+  String get status => _status ?? '';
+
+  bool hasStatus() => _status != null;
+
   void _initializeFields() {
     _userId = snapshotData['user_id'] as String?;
     _address = snapshotData['address'] as String?;
-    _dogId = snapshotData['dog_id'] as String?;
+    _dog = snapshotData['dog'];
+    _status = snapshotData['status'] as String?;
   }
 
-  static CollectionReference get collection => FirebaseFirestore.instance.collection('adoption_requests');
+  static CollectionReference get collection =>
+      FirebaseFirestore.instance.collection('adoption_requests');
 
   static Stream<AdoptionRequestRecord> getDocument(DocumentReference ref) =>
       ref.snapshots().map((s) => AdoptionRequestRecord.fromSnapshot(s));
@@ -47,16 +54,12 @@ class AdoptionRequestRecord extends FirestoreRecord {
       ref.get().then((s) => AdoptionRequestRecord.fromSnapshot(s));
 
   static AdoptionRequestRecord fromSnapshot(DocumentSnapshot snapshot) =>
-      AdoptionRequestRecord._(
-        snapshot.reference,
-        snapshot.data() as Map<String, dynamic>,
-      );
+      AdoptionRequestRecord._(snapshot.reference, snapshot.data() as Map<String, dynamic>);
 
   static AdoptionRequestRecord getDocumentFromData(
     Map<String, dynamic> data,
     DocumentReference reference,
-  ) =>
-      AdoptionRequestRecord._(reference, data);
+  ) => AdoptionRequestRecord._(reference, data);
 
   @override
   String toString() => 'Adoption Request(reference: ${reference.path}, data: $snapshotData)';
@@ -68,15 +71,24 @@ class AdoptionRequestRecord extends FirestoreRecord {
   bool operator ==(other) =>
       other is AdoptionRequestRecord && reference.path.hashCode == other.reference.path.hashCode;
 }
+
 Map<String, dynamic> createAdoptionRequestRecordData({
   String? userId,
-  String? dogId,
-  String? address
+  DogRecord? dog,
+  String? address,
 }) {
+  var dogData = createDogRecordData(
+    adoptionUserId: userId,
+    description: dog!.description,
+    image: dog.image,
+    age: dog.age,
+  );
+  dogData["dogId"] = dog.reference.id;
   final firestoreData = <String, dynamic>{
     'user_id': userId,
-    'address': dogId,
-    'dog_id': address
+    'address': address,
+    'dog': dogData,
+    'status': "Pending",
   };
 
   return firestoreData;

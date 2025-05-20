@@ -84,7 +84,7 @@ Future maybeCreateUser(User user) async {
         FirebaseAuth.instance.currentUser?.displayName ??
         user.email!.split("@").first,
     photoUrl: user.photoURL,
-    uid: user.uid,
+    uid: userRecord.id,
     phoneNumber: user.phoneNumber,
   );
 

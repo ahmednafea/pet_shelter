@@ -8,8 +8,8 @@ IdentityState identityReducer(IdentityState state, action) {
     return state.copyWith(currentUser: action.data, currentUserData: action.userData);
   } else if (action is ClearUserDataAction) {
     SharedPreferences.getInstance().then((pref) async {
-      await pref.remove("cpmEmail");
-      await pref.remove("cpmPassword");
+      await pref.remove("baytAleefEmail");
+      await pref.remove("baytAleefPassword");
     });
     state.currentUser = null;
     return state.copyWith(currentUser: state.currentUser);

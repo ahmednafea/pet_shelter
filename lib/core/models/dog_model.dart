@@ -2,8 +2,9 @@ import 'package:firebase_cloud_firestore/firebase_cloud_firestore.dart';
 import 'package:pet_shelter/firebase_auth/firestore_util.dart';
 
 class DogRecord extends FirestoreRecord {
-  String? userId;
+
   String? image;
+  int? age;
   String? description;
   String? adoptionUserId;
 
@@ -12,8 +13,8 @@ class DogRecord extends FirestoreRecord {
   }
 
   void _initializeFields() {
-    userId = snapshotData['user_id'] as String?;
     image = snapshotData['image'] as String?;
+    age = snapshotData['age'] as int?;
     description = snapshotData['description'] as String?;
     adoptionUserId = snapshotData['adoption_user_id'] as String?;
   }
@@ -40,15 +41,15 @@ class DogRecord extends FirestoreRecord {
       other is DogRecord && reference.path.hashCode == other.reference.path.hashCode;
 }
 Map<String, dynamic> createDogRecordData({
-  String? userId,
   String? image,
   String? description,
-  String? adoptionUserId
+  String? adoptionUserId,
+  int? age
 }) {
   final firestoreData = <String, dynamic>{
-    'user_id': userId,
     'image': image,
     'description': description,
+    'age': age,
     'adoption_user_id': adoptionUserId
   };
 
